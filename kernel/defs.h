@@ -173,6 +173,10 @@ uint64          walkaddr(pagetable_t, uint64);
 int             copyout(pagetable_t, uint64, char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
+void            refup(void* pa);
+int             iscowpage(uint64 va);
+void            startcowcopy(uint64 va);
+void*           cowcopy_pa(void* pa);
 
 // plic.c
 void            plicinit(void);

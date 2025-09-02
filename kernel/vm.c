@@ -340,8 +340,11 @@ uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
   pte_t *pte;
   uint64 pa, i;
   uint flags;
+<<<<<<< Updated upstream
   char *mem;
   int szinc;
+=======
+>>>>>>> Stashed changes
 
   for(i = 0; i < sz; i += szinc){
     szinc = PGSIZE;
@@ -351,14 +354,20 @@ uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
     if((*pte & PTE_V) == 0)
       panic("uvmcopy: page not present");
     pa = PTE2PA(*pte);
+
+    // lab5: Copy on write
+    // father
+    // 如果该页本身就不可写，那么子进程肯定也不可写，不用对其考虑COW
+    if(*pte & PTE_W){  
+        *pte &= ~PTE_W;
+        *pte |= PTE_COW;
+    }
     flags = PTE_FLAGS(*pte);
-    if((mem = kalloc()) == 0)
-      goto err;
-    memmove(mem, (char*)pa, PGSIZE);
-    if(mappages(new, i, PGSIZE, (uint64)mem, flags) != 0){
-      kfree(mem);
+    // child
+    if(mappages(new, i, PGSIZE, (uint64)pa, flags) != 0){
       goto err;
     }
+    refup((void*)pa);
   }
   return 0;
 
@@ -387,12 +396,12 @@ int
 copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
 {
   uint64 n, va0, pa0;
-  pte_t *pte;
 
   while(len > 0){
     va0 = PGROUNDDOWN(dstva);
     if (va0 >= MAXVA)
       return -1;
+<<<<<<< Updated upstream
     if((pte = walk(pagetable, va0, 0)) == 0) {
       // printf("copyout: pte should exist 0x%x %d\n", dstva, len);
       return -1;
@@ -406,6 +415,17 @@ copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
     pa0 = walkaddr(pagetable, va0);
     if(pa0 == 0)
       return -1;
+=======
+    if(iscowpage(va0)){                 
+      startcowcopy(va0);                
+      pa0 = walkaddr(pagetable, va0);   
+    } else {
+      pa0 = walkaddr(pagetable, va0);
+    }
+    if(pa0 == 0)
+      return -1;
+
+>>>>>>> Stashed changes
     n = PGSIZE - (dstva - va0);
     if(n > len)
       n = len;
@@ -486,6 +506,7 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
   }
 }
 
+<<<<<<< Updated upstream
 
 #ifdef LAB_PGTBL
 void
@@ -502,3 +523,44 @@ pgpte(pagetable_t pagetable, uint64 va) {
   return walk(pagetable, va, 0);
 }
 #endif
+=======
+int
+iscowpage(uint64 va){
+  struct proc* p = myproc();
+  if(p == 0)
+    return 0;
+  va = PGROUNDDOWN((uint64)va);
+  if(va >= MAXVA || va >= p->sz)
+    return 0;
+  pte_t* pte = walk(p->pagetable,va,0);
+  if(pte == 0)
+    return 0;
+  if((*pte & PTE_COW) && (*pte & PTE_V))
+    return 1;
+  return 0;
+}
+
+void
+startcowcopy(uint64 va){
+  struct proc* p = myproc();
+  va = PGROUNDDOWN((uint64)va);
+  pte_t* pte = walk(p->pagetable,va,0);
+  if(pte == 0 || (*pte & PTE_V) == 0)
+    panic("startcowcopy: invalid pte");
+  uint64 pa = PTE2PA(*pte);
+
+  void* new = cowcopy_pa((void*)pa);
+  if((uint64)new == 0){
+    panic("cowcopy_pa err\n");
+    exit(-1);
+  }
+
+  uint64 flags = (PTE_FLAGS(*pte) | PTE_W) & (~PTE_COW);
+  uvmunmap(p->pagetable, va, 1, 0);  // 不包含kfree，因为ref--在cowcopy_pa中已经进行了
+
+  if(mappages(p->pagetable, va, PGSIZE, (uint64)new, flags) == -1){
+    kfree(new);
+    panic("cow mappages failed");
+  }
+}
+>>>>>>> Stashed changes
