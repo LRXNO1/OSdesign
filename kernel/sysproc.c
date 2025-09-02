@@ -1,11 +1,10 @@
 #include "types.h"
 #include "riscv.h"
-#include "defs.h"
 #include "param.h"
+#include "defs.h"
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
-#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -55,6 +54,7 @@ sys_sleep(void)
   int n;
   uint ticks0;
 
+
   argint(0, &n);
   if(n < 0)
     n = 0;
@@ -70,6 +70,37 @@ sys_sleep(void)
   release(&tickslock);
   return 0;
 }
+
+
+
+int
+sys_pgpte(void)
+{
+  uint64 va;
+  struct proc *p;  
+
+  p = myproc();
+  argaddr(0, &va);
+  pte_t *pte = pgpte(p->pagetable, va);
+  if(pte != 0) {
+      return (uint64) *pte;
+  }
+  return 0;
+}
+
+
+
+int
+sys_kpgtbl(void)
+{
+  struct proc *p;  
+
+  p = myproc();
+  vmprint(p->pagetable);
+  return 0;
+}
+
+
 
 uint64
 sys_kill(void)
@@ -91,16 +122,4 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
-}
-
-// click the sys call number in p->tracemask
-// so as to tracing its calling afterwards
-uint64 
-sys_trace(void) {
-  int trace_sys_mask;
-  argint(0, &trace_sys_mask);
-  if ( trace_sys_mask < 0)
-    return -1;
-  myproc()->tracemask |= trace_sys_mask;
-  return 0;
 }

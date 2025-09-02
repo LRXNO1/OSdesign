@@ -101,7 +101,17 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
-extern uint64 sys_trace(void);
+
+#ifdef LAB_NET
+extern uint64 sys_bind(void);
+extern uint64 sys_unbind(void);
+extern uint64 sys_send(void);
+extern uint64 sys_recv(void);
+#endif
+#ifdef LAB_PGTBL
+extern uint64 sys_pgpte(void);
+extern uint64 sys_kpgtbl(void);
+#endif
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -127,35 +137,19 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_trace]   sys_trace,
+#ifdef LAB_NET
+[SYS_bind] sys_bind,
+[SYS_unbind] sys_unbind,
+[SYS_send] sys_send,
+[SYS_recv] sys_recv,
+#endif
+#ifdef LAB_PGTBL
+[SYS_pgpte] sys_pgpte,
+[SYS_kpgtbl] sys_kpgtbl,
+#endif
 };
 
-static char *sysnames[] = {
-  "",
-  "fork",
-  "exit",
-  "wait",
-  "pipe",
-  "read",
-  "kill",
-  "exec",
-  "fstat",
-  "chdir",
-  "dup",
-  "getpid",
-  "sbrk",
-  "sleep",
-  "uptime",
-  "open",
-  "write",
-  "mknod",
-  "unlink",
-  "link",
-  "mkdir",
-  "close",
-  "trace",
-  
-};
+
 
 void
 syscall(void)
@@ -168,10 +162,6 @@ syscall(void)
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
     p->trapframe->a0 = syscalls[num]();
-    if (p->tracemask & (1 << num)) { // << 判断是否需要trace这个系统调用
-      // this process traces this sys call num
-      printf("%d: syscall %s -> %ld\n", p->pid, sysnames[num], p->trapframe->a0);
-    }
   } else {
     printf("%d %s: unknown sys call %d\n",
             p->pid, p->name, num);

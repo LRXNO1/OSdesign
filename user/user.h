@@ -1,3 +1,7 @@
+#ifdef LAB_MMAP
+typedef unsigned long size_t;
+typedef long int off_t;
+#endif
 struct stat;
 
 // system calls
@@ -22,7 +26,17 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int trace(int);
+#ifdef LAB_NET
+int bind(uint32);
+int unbind(uint32);
+int send(uint32, uint32, uint32, char *, uint32);
+int recv(uint32, uint32*, uint32*, char *, uint32);
+#endif
+
+int ugetpid(void);
+uint64 pgpte(void*);
+void kpgtbl(void);
+
 
 // ulib.c
 int stat(const char*, struct stat*);
@@ -38,6 +52,9 @@ void* memset(void*, int, uint);
 int atoi(const char*);
 int memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
+#ifdef LAB_LOCK
+int statistics(void*, int);
+#endif
 
 // umalloc.c
 void* malloc(uint);
