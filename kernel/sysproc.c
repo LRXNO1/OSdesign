@@ -5,7 +5,6 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
-#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -68,6 +67,7 @@ sys_sleep(void)
     sleep(&ticks, &tickslock);
   }
   release(&tickslock);
+  backtrace();
   return 0;
 }
 
@@ -93,14 +93,26 @@ sys_uptime(void)
   return xticks;
 }
 
-// click the sys call number in p->tracemask
-// so as to tracing its calling afterwards
-uint64 
-sys_trace(void) {
-  int trace_sys_mask;
-  argint(0, &trace_sys_mask);
-  if ( trace_sys_mask < 0)
+uint64
+sys_sigalarm(void) {
+  argint(0, &myproc()->alarm_interval);
+  argaddr(1, (uint64*)&myproc()->alarm_handler);
+  if( myproc()->alarm_interval < 0 || (uint64*)&myproc()->alarm_handler < 0)
     return -1;
-  myproc()->tracemask |= trace_sys_mask;
+
   return 0;
 }
+
+uint64
+sys_sigreturn(void)
+{
+  // Save the original a0 value before restoring trapframe
+  uint64 saved_a0 = myproc()->alarm_trapframe->a0;
+  
+  memmove(myproc()->trapframe, myproc()->alarm_trapframe, sizeof(struct trapframe));
+  myproc()->is_alarming = 0;
+  
+  // Return the original a0 value, not 0
+  return saved_a0;
+}
+
