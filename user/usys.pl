@@ -36,4 +36,13 @@ entry("getpid");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
+<<<<<<< Updated upstream
 entry("trace");
+=======
+entry("bind");
+entry("unbind");
+entry("send");
+entry("recv");
+entry("pgpte");
+entry("kpgtbl");
+>>>>>>> Stashed changes

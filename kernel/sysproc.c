@@ -5,7 +5,6 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
-#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -92,6 +91,7 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+<<<<<<< Updated upstream
 
 // click the sys call number in p->tracemask
 // so as to tracing its calling afterwards
@@ -104,3 +104,5 @@ sys_trace(void) {
   myproc()->tracemask |= trace_sys_mask;
   return 0;
 }
+=======
+>>>>>>> Stashed changes
