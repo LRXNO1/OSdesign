@@ -22,7 +22,21 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+<<<<<<< Updated upstream
 int trace(int);
+=======
+#ifdef LAB_NET
+int bind(uint16);
+int unbind(uint16);
+int send(uint16, uint32, uint16, char *, uint32);
+int recv(uint16, uint32*, uint16*, char *, uint32);
+#endif
+#ifdef LAB_PGTBL
+int ugetpid(void);
+uint64 pgpte(void*);
+void kpgtbl(void);
+#endif
+>>>>>>> Stashed changes
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -36,4 +36,7 @@ entry("getpid");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
+<<<<<<< Updated upstream
 entry("trace");
+=======
+>>>>>>> Stashed changes
