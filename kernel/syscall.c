@@ -102,7 +102,10 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 extern uint64 sys_trace(void);
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -130,6 +133,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 [SYS_trace]   sys_trace,
 };
@@ -159,6 +163,8 @@ static char *sysnames[] = {
   "close",
   "trace",
   
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 };

@@ -37,6 +37,9 @@ entry("sbrk");
 entry("sleep");
 entry("uptime");
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 entry("trace");
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

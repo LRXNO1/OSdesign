@@ -105,7 +105,10 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   uint64 tracemask;            // the sys calls this proc is tracing
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 };

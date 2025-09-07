@@ -289,8 +289,11 @@ fork(void)
     return -1;
   }
 
+<<<<<<< Updated upstream
   // inherit parent's trace mask << fork出的新进程继承父进程的bit mask
   np->tracemask = p->tracemask;
+=======
+>>>>>>> Stashed changes
 
   // Copy user memory from parent to child.
   if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){

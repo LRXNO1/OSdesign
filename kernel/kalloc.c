@@ -67,6 +67,7 @@ kfree(void *pa)
     panic("kfree");
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 #ifndef LAB_SYSCALL
   // Fill with junk to catch dangling refs.
@@ -75,15 +76,23 @@ kfree(void *pa)
   
   r = (struct run*)pa;
 =======
+=======
+>>>>>>> Stashed changes
   acquire(&ref_lock);
   pm_ref[getRefIdx((uint64)pa)] --; 
   if(pm_ref[getRefIdx((uint64)pa)] <= 0){
     // Fill with junk to catch dangling refs.
     memset(pa, 1, PGSIZE);
+<<<<<<< Updated upstream
 
     r = (struct run*)pa;
 >>>>>>> Stashed changes
 
+=======
+
+    r = (struct run*)pa;
+
+>>>>>>> Stashed changes
     acquire(&kmem.lock);
     r->next = kmem.freelist;
     kmem.freelist = r;
@@ -109,10 +118,18 @@ kalloc(void)
   }
   release(&kmem.lock);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 #ifndef LAB_SYSCALL
   if(r)
     memset((char*)r, 5, PGSIZE); // fill with junk
 #endif
+=======
+
+  if(r){
+    memset((char*)r, 5, PGSIZE); // fill with junk
+    pm_ref[getRefIdx((uint64)r)] = 1;  // 初始化不用加锁
+  }
+>>>>>>> Stashed changes
 =======
 
   if(r){

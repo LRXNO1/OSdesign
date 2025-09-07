@@ -195,12 +195,15 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	$U/_sleep\
 	$U/_pingpong\
 	$U/_primes\
 	$U/_find\
 	$U/_xargs\
 	$U/_trace\
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 

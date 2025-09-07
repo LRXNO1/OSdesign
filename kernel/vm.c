@@ -341,11 +341,19 @@ uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
   uint64 pa, i;
   uint flags;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   char *mem;
   int szinc;
 =======
 >>>>>>> Stashed changes
 
+=======
+
+  int szinc;
+
+  szinc = PGSIZE;
+
+>>>>>>> Stashed changes
   for(i = 0; i < sz; i += szinc){
     szinc = PGSIZE;
     szinc = PGSIZE;
@@ -402,6 +410,7 @@ copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
     if (va0 >= MAXVA)
       return -1;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     if((pte = walk(pagetable, va0, 0)) == 0) {
       // printf("copyout: pte should exist 0x%x %d\n", dstva, len);
       return -1;
@@ -415,6 +424,17 @@ copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
     pa0 = walkaddr(pagetable, va0);
     if(pa0 == 0)
       return -1;
+=======
+    if(iscowpage(va0)){                 
+      startcowcopy(va0);                
+      pa0 = walkaddr(pagetable, va0);   
+    } else {
+      pa0 = walkaddr(pagetable, va0);
+    }
+    if(pa0 == 0)
+      return -1;
+
+>>>>>>> Stashed changes
 =======
     if(iscowpage(va0)){                 
       startcowcopy(va0);                
@@ -507,6 +527,7 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 #ifdef LAB_PGTBL
 void
@@ -524,6 +545,8 @@ pgpte(pagetable_t pagetable, uint64 va) {
 }
 #endif
 =======
+=======
+>>>>>>> Stashed changes
 int
 iscowpage(uint64 va){
   struct proc* p = myproc();
@@ -563,4 +586,7 @@ startcowcopy(uint64 va){
     panic("cow mappages failed");
   }
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

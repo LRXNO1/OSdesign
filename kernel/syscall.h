@@ -21,6 +21,9 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 #define SYS_trace  22
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
