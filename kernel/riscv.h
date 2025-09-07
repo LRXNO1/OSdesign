@@ -381,6 +381,10 @@ typedef uint64 *pagetable_t; // 512 PTEs
 // that have the high bit set.
 #define MAXVA (1L << (9 + 9 + 9 + 12 - 1))
 
+<<<<<<< Updated upstream
+=======
+#ifndef __ASSEMBLER__
+>>>>>>> Stashed changes
 static inline uint64
 r_fp()
 {
@@ -388,4 +392,8 @@ r_fp()
   asm volatile("mv %0, s0" : "=r" (x) );
   return x;
 }
+<<<<<<< Updated upstream
+=======
+#endif
+>>>>>>> Stashed changes
 
